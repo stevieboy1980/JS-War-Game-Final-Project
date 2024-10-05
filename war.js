@@ -22,7 +22,14 @@
  * An Array to store the cards
  * An Array to store all the cards ranks
  */
+console.log('Welcome to the game!')
 
+/** Deck Class
+ * The deck class represents a standard deck of playing cards
+ * this.deck: An array that stores card objects
+ * ranks: An array of card ranks ace to king
+ * suits: An array of the four suits
+ */
 class Deck {
   constructor() {
     this.deck = [];
@@ -44,8 +51,10 @@ class Deck {
     this.suits = ["Hearts ♥ ", "Diamonds ♦", "Clubs ♣ ", "Spades ♠"];
   }
 
-  // A method to create a deck...iterate over our ranks/suits
-  // Push a new card (as an object) into our constructors this.deck
+  /** Methods
+   * createDeck creates a full deck by combining each rank with each suit
+   * It iterates over the ranks and suits arrays creating a card object for each combination and pushing it into the deck array
+   */
 
   createDeck() {
     for (let i = 0; i < this.suits.length; i++) {
@@ -59,7 +68,11 @@ class Deck {
       }
     }
   }
-
+  /**
+   * shuffleDeck
+   * This method randomly shuffles the cards in the deck.
+   * It uses the Fisher-Yates algorithm to shuffle the deck in place.  This ensures that each card is random and not just in order
+   */
   shuffleDeck() {
     for (let i = this.deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -68,20 +81,13 @@ class Deck {
     }
   }
 }
-//Class for the War game
-/** Needs:
- * - Deck... instantiate a new deck inside of the game class
- *
- * - Create the deck, shuffle the deck, and pass the deck
- *
- * - logic to play the game
- *      - turn based, how many turns?
- *      - do our players have a hand yet?
- *      - control flow statement logic to decide who wins
- * -2 players
- *  -hand
- *  -score
- *  -name
+
+/** Game Class
+ * this class represents the logic of the game
+ * Properties
+ * Player 1 and Player 2
+ * These are the objects that represent the two players
+ * Attributes: name, score, hand(Array to store the cards dealt to the player)
  */
 
 class Game {
@@ -100,27 +106,29 @@ class Game {
 
   //Method to play the game
   /**
-   * Pass out cards to players
-   * Take x amount of turns
-   * as long as players have cards (or the number of cards they have)
-   * Award points based on card.value
-   * Log the winner
+   * playGame method 
+   * It manages the overall gameplay, distributing cards, comparing card values, and determining the winner.
    */
   playGame() {
     // Instantiate new deck, create a deck, then shuffle the deck
     const deck = new Deck();
     deck.createDeck();
     deck.shuffleDeck();
-
+// Distributes cards alternately between both players until deck is empty
     while (deck.deck.length !== 0) {
       this.player1.hand.push(deck.deck.shift());
       this.player2.hand.push(deck.deck.shift());
     }
 
-    //Actually playing the game... how many turns do I need?
+   /**
+    * The for loop compares each pair of cards between the players
+    * If player 1 has a higher card value, they win a point
+    * If player 2 does, they win a point
+    * If the cards have the same value it triggers a tie and invokes the resolveTie method.
+    */
 
     for (let i = 0; i < this.player1.hand.length; i++) {
-      // conditional logic to award points based on comparing the card values
+      
 
       if (this.player1.hand[i].value > this.player2.hand[i].value) {
         this.player1.score++;
@@ -162,6 +170,13 @@ class Game {
                      p2: ${this.player2.score}`)
     }
   }
+
+  /** resolveTie method
+   * This handles the game logic when a tie occurs
+   * Each player plays additional cards to break the tie
+   * The player with the higher value of the fourth card turned wins the war and earns more points
+   * If there is another tie, the war continues until one player wins the war or a player runs out of cards.
+   */
   resolveTie(i) {
     const warCards = 3; // Number of additional cards for the war
     let p1Card, p2Card;
